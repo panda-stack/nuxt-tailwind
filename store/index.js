@@ -1,12 +1,12 @@
 import axios from "axios";
 
-const state = {
+export const state = () => ({
   products: [],
   categories: [],
   filterData: [],
   totalPage: 0,
   currentPage: 0
-};
+});
 
 const getters = {
   getProducts: state => state.filterData,
@@ -20,9 +20,9 @@ const mutations = {
     state.products = payload.data;
     state.filterData = payload.data;
     const uniqueCategories = [];
-    payload.data.forEach((product) => {
+    payload.data.forEach(product => {
       if (!uniqueCategories.includes(product.catname)) {
-        uniqueCategories.push(product.catname)
+        uniqueCategories.push(product.catname);
       }
     });
     state.categories = uniqueCategories;
@@ -31,28 +31,34 @@ const mutations = {
   },
   setProducts(state, payload) {
     if (payload === "") {
-      state.filterData = state.products
+      state.filterData = state.products;
     } else {
-      const temp = state.products.filter(product => product.catname === payload);
-      state.filterData = temp
+      const temp = state.products.filter(
+        product => product.catname === payload
+      );
+      state.filterData = temp;
     }
   }
-}
+};
 
 const actions = {
-  async fetchData(state,id) {
-    const res = await axios.get(`https://trayvonnorthern.com/Edgewood-API/public/api/products?page=${id}`)
+  async fetchData(state, id) {
+    const res = await axios.get(
+      `https://trayvonnorthern.com/Edgewood-API/public/api/products?page=${id}`
+    );
     state.commit("setData", res.data);
   },
   async filterData(state, e) {
-    const category = e.target.options[e.target.options.selectedIndex].innerText.trim();
+    const category = e.target.options[
+      e.target.options.selectedIndex
+    ].innerText.trim();
     state.commit("setProducts", category);
   }
-}
+};
 
 export default {
   state,
   getters,
   actions,
   mutations
-}
+};
